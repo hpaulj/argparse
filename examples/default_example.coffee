@@ -100,7 +100,7 @@ print args
 
 ###
 bug report:
-`addArgument([...],{defaultValue:0}]` does not work
+`addArgument([...],{defaultValue:0})` does not work
 
 Trying to set the Action `defaultValue` to a falsie via `addArgument` does not work.
 The problem is with the `if (!options.defaultValue) {` test.  It is supposed to detect
