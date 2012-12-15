@@ -11,21 +11,21 @@ var parentParser = new ArgumentParser({
 parentParser.addArgument([ '--x' ]);
 
 var childParser = new ArgumentParser({
-  description: 'child', 
+  description: 'child',
   parents: [parentParser]
 });
-childParser.addArgument(['--y'])
+childParser.addArgument(['--y']);
 
-console.log(childParser.formatHelp())
+console.log(childParser.formatHelp());
 
-console.log('====================\nPython example')
+console.log('====================\nPython example');
 
 var parentParser = new ArgumentParser({
-  addHelp: false, 
-  debug:true
+  addHelp: false,
+  debug: true
 });
 parentParser.addArgument(
-  ['--parent'], 
+  ['--parent'],
   {type: 'int', description: 'parent'}
 );
 
@@ -38,7 +38,7 @@ console.log(fooParser.formatHelp());
 
 var args = fooParser.parseArgs(['--parent', '2', 'XXX']);
 console.log(args);
-console.log ("Python: Namespace(foo='XXX', parent=2)");
+console.log("Python: Namespace(foo='XXX', parent=2)");
 
 var barParser = new ArgumentParser({
   parents: [parentParser],
