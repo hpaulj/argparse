@@ -103,10 +103,11 @@ describe('ArgumentParser', function () {
     });
  
     it("should parse negative arguments", function () {
-      parser.addArgument([ 'bar' ], { type: 'int', });
+      parser.addArgument([ 'bar' ], { type: 'int' });
       args = parser.parseArgs(['-1']);
       assert.equal(args.bar, -1);
     });
+    
     it("with flags that look like negative numbers, reject negative arguments", function () {
       parser.addArgument([ '-1', '--one'], { type: 'int', });
       args = parser.parseArgs(['-1', '2']);
@@ -116,6 +117,13 @@ describe('ArgumentParser', function () {
           parser.parseArgs(['-1', '-2']);
         },
         /Expected one argument/
+      );
+      assert.throws(
+        function () {
+          parser.addArgument(['bar'], { type: 'int' });
+          parser.parseArgs(['-2']);
+        },
+        /too few arguments/
       );
     });
     
