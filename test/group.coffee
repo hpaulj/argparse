@@ -41,22 +41,28 @@ group2 = parser.addArgumentGroup({title:'group2', description:'group2 descriptio
 group2.addArgument(['--bar'], {help:'bar help'})
 parser.print_help()
 
+print group1
+print 'group1 action', group1._groupActions[0].dest
+print 'parser action groups', (action.title for action in parser._actionGroups)
+
 header 'mutual exclusion'
 parser = new ArgumentParser({prog: 'PROG', debug:true})
 group = parser.addMutuallyExclusiveGroup()
 group.addArgument(['--foo'], {action: 'storeTrue'})
 group.addArgument(['--bar'], {action: 'storeFalse'})
 print "[]", parser.parseArgs([])
+print '--foo'
 print "['--foo']", parser.parseArgs(['--foo'])
 
 print "['--bar']", parser.parseArgs(['--bar'])
 
+print argv = ['--foo', '--bar']
 try 
     argv = ['--foo', '--bar']
-    print argv, parser.parseArgs(argv)
+    print parser.parseArgs(argv)
 catch error
     print error
-    print argv, 'dont allow both'
+    print 'dont allow both'
 
 parser = new ArgumentParser({prog: 'PROG', debug:true})
 group = parser.addMutuallyExclusiveGroup(true)
@@ -68,6 +74,10 @@ try
 catch error
     print error
     print  argv, 'require one'
+
+print 'group._groupActions', (action.dest for action in group._groupActions)
+print '2 container pointers? ', group.container == group._container
+# has both container and _container, why?
 
 ###
 Python output
@@ -104,4 +114,10 @@ so does master
 JS is giving
 [TypeError: argument "--bar": Not allowed with argument "--bar".]
 actionConflict.getName() (ln 386) is giving bar rather than foo
+
+error messages need to be cleaned
+group._groupActions, list of actions, one with dest 'foo', other 'bar'
+group._mutuallyExclusiveGroups
+group.required == true
+
 ###
