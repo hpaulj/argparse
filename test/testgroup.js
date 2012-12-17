@@ -31,17 +31,17 @@ describe('ArgumentParser', function () {
 
     it('2 group test', function () {
       parser = new ArgumentParser({prog: 'PROG', addHelp: false, debug: true});
-      group1 = parser.addArgumentGroup({title:'group1', description:'group1 description'});
-      group1.addArgument(['foo'], {help:'foo help'});
-      group2 = parser.addArgumentGroup({title:'group2', description:'group2 description'});
-      group2.addArgument(['--bar'], {help:'bar help'});
+      group1 = parser.addArgumentGroup({title: 'group1', description: 'group1 description'});
+      group1.addArgument(['foo'], {help: 'foo help'});
+      group2 = parser.addArgumentGroup({title: 'group2', description: 'group2 description'});
+      group2.addArgument(['--bar'], {help: 'bar help'});
       //parser.print_help();
       assert(group1._groupActions.length, 1);
       assert(parser._actionGroups.length, 4); // group1, group2, positionals, optionals
     });
 
     it('mutually exclusive group test', function () {
-      parser = new ArgumentParser({prog: 'PROG', debug:true});
+      parser = new ArgumentParser({prog: 'PROG', debug: true});
       group = parser.addMutuallyExclusiveGroup();
       group.addArgument(['--foo'], {action: 'storeTrue'});
       group.addArgument(['--bar'], {action: 'storeFalse'});
@@ -51,7 +51,7 @@ describe('ArgumentParser', function () {
       assert.equal(args.bar, true);
 
       args = parser.parseArgs(['--foo']);
-      // Python: Namespace(bar=True, foo=True)      
+      // Python: Namespace(bar=True, foo=True)
       assert.equal(args.foo, true);
       assert.equal(args.bar, true);
 
@@ -61,14 +61,14 @@ describe('ArgumentParser', function () {
     });
     
     it('mutually exclusive group test', function () {
-      parser = new ArgumentParser({prog: 'PROG', debug:true});
+      parser = new ArgumentParser({prog: 'PROG', debug: true});
       group = parser.addMutuallyExclusiveGroup();
       group.addArgument(['--foo'], {action: 'storeTrue'});
       group.addArgument(['--bar'], {action: 'storeFalse'});
 
-      assert.throws( 
+      assert.throws(
         function () {
-          args = parser.parseArgs(['--foo','--bar']);
+          args = parser.parseArgs(['--foo', '--bar']);
         },
         // Python:  error: argument --bar: not allowed with argument --foo
         // I  had problems with the proper pairing of bar and foo
@@ -77,14 +77,14 @@ describe('ArgumentParser', function () {
       );
     });
     it('mutually exclusive group test', function () {
-      parser = new ArgumentParser({prog: 'PROG', debug:true});
-      group = parser.addMutuallyExclusiveGroup(true); 
+      parser = new ArgumentParser({prog: 'PROG', debug: true});
+      group = parser.addMutuallyExclusiveGroup({required: true});
       // or should the input be {required: true}?
       group.addArgument(['--foo'], {action: 'storeTrue'});
       group.addArgument(['--bar'], {action: 'storeFalse'});
       assert.equal(group.required, true);
       assert.equal(group._groupActions.length, 2);
-      assert.throws( 
+      assert.throws(
         function () {
           args = parser.parseArgs([]);
         },

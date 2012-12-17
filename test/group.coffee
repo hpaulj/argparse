@@ -65,9 +65,9 @@ catch error
     print 'dont allow both'
 
 parser = new ArgumentParser({prog: 'PROG', debug:true})
-group = parser.addMutuallyExclusiveGroup(true)
+group = parser.addMutuallyExclusiveGroup({required:true})
 group.addArgument(['--foo'], {action: 'storeTrue'})
-group.addArgument(['--bar'], {action: 'storeFalse'})
+barAction = group.addArgument(['--bar'], {action: 'storeFalse'})
 try
     argv = []
     print argv, parser.parseArgs(argv)
@@ -79,6 +79,26 @@ print 'group._groupActions', (action.dest for action in group._groupActions)
 print '2 container pointers? ', group.container == group._container
 # has both container and _container, why?
 
+print '== add a 2nd group =='
+group2 = parser.addMutuallyExclusiveGroup()
+group2.addArgument(['--baz'], {action: 'storeTrue'})
+# is it possible to add an overlapping option to this group?
+# not like this
+print '== trying to add overlapping argument =='
+try
+  group2.addArgument(['--bar'], {action: 'storeFalse'})
+catch error
+  print error
+  
+print '== push existing action onto new group =='
+group2._groupActions.push(barAction)
+print parser.parseArgs(['--foo','--baz'])
+print parser.parseArgs(['--bar'])
+try
+  print parser.parseArgs(['--bar','--baz'])
+catch error
+  print error
+  
 ###
 Python output
 === argument group ===
