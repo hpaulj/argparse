@@ -49,4 +49,24 @@ var args = barParser.parseArgs(['--bar', 'YYY']);
 console.log(args);
 console.log("Python: Namespace(bar='YYY', parent=None)");
 
+console.log('====================\nparent with group');
+// testing add_action_groups
+var group
+parentParser = new ArgumentParser({prog:'PROG', addHelp:false})
+parentParser.addArgument(['--parentopt'])
+parentParser.addArgument(['baz'])
+group = parentParser.addArgumentGroup({title:'parent group'})
+group.addArgument(['--foo'], {help:'foo help'})
+//group.addArgument(['baz'], {help:'baz help'})
+parentParser.printHelp()
 
+barParser = new ArgumentParser({
+  parents: [parentParser],
+  description: 'child2 parser'
+});
+barParser.addArgument(['--bar']);
+
+barParser.printHelp()
+
+args = barParser.parseArgs(['--bar', 'YYY','bazarg']);
+console.log(args)
