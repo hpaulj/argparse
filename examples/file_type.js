@@ -2,7 +2,7 @@
 'use strict';
 
 /**
-* FileType example
+* fileType example
 * creates a user type equivalient to the argparse.py FileType
 * and uses it in a UNIX <cat> like script
 **/
@@ -12,6 +12,17 @@ var util = require('util');
 var argparse = require('argparse');
 var _ = require('underscore');
 
+var ArgumentTypeError;
+/*
+function ArgumentTypeError(msg) {
+  Error.captureStackTrace(this, this);
+  this.message = msg || 'Argument Error';
+  this.name = 'ArgumentTypeError';
+}
+util.inherits(ArgumentTypeError, Error);
+*/
+
+ArgumentTypeError = require('../lib/argument/error_types').ArgumentTypeError;
 
 /**
 * Equivalent to the argparse.py FileType class
@@ -32,8 +43,8 @@ var _ = require('underscore');
 * which can used with the stream events, or `fs` methods using `fd`.
 **/
 
-var FileType = function (options) {
-  console.log('FILETYPE',options)
+var fileType = function (options) {
+  console.log('FILETYPE', options);
   var fs = require('fs');
   options = options || {flags: 'r'};
   var flags = (_.isString(options)) ? options : options.flags;
@@ -50,7 +61,7 @@ var FileType = function (options) {
 
   // function to handle argument string
   var fn = function (filename) {
-    console.log('filetype',filename)
+    console.log('filetype', filename);
     var fd, stream;
     if (filename === '-') {
       stream = std;
@@ -78,20 +89,6 @@ var FileType = function (options) {
  * gives added information for anonymous types.
 */
 
-var ArgumentTypeError;
-function ArgumentTypeError(msg) {
-  Error.captureStackTrace(this, this);
-  this.message = msg || 'Argument Error';
-  this.name = 'ArgumentTypeError';
-};
-util.inherits(ArgumentTypeError, Error);
-
-try {
-  ArgumentTypeError = require('../lib/argument/error_types').ArgumentTypeError;
-  // console.log('loaded ArgumentTypeError')
-} catch (err) {
-  // strict mode does not allow me to define ArgumentTypeError here
-};
 
 /**
 * Example use with a UNIX `cat` like behavior
@@ -99,7 +96,7 @@ try {
 **/
 
 // use this file as the default
-// var meStream = FileType({flags: 'r', encoding: 'utf8'})(process.argv[1]);
+// var meStream = fileType({flags: 'r', encoding: 'utf8'})(process.argv[1]);
 var deffile = process.argv[1];
 // ? should the default be an open stream, or a filename (path)
 var helpstr = 'Functionality is roughly that of <cat>';
@@ -110,7 +107,7 @@ var parser = new argparse.ArgumentParser({
 });
 
 parser.addArgument(['-i', '--infile'], {
-  type: FileType({
+  type: fileType({
     flags: 'r',
     encoding: 'utf8'
   }),
@@ -119,7 +116,7 @@ parser.addArgument(['-i', '--infile'], {
 });
 
 parser.addArgument(['-o', '--outfile'], {
-  type: FileType({
+  type: fileType({
     flags: 'w'
   }),
   help: 'Output filename or `-`'
@@ -150,18 +147,18 @@ group.addArgument(['-q', '--quiet'], {
 
 var args = parser.parseArgs();
 
-var print
+var print;
 if (args.quiet) {
   print = function () {};
 } else {
   if (args.debug) {
     print = util.debug;
   } else {
-    print = console.error
+    print = console.error;
   }
 }
 
-if (args.verbose ||args.debug) {
+if (args.verbose || args.debug) {
   print(parser.formatHelp());
 
   print('-------------------------');
@@ -180,19 +177,19 @@ if (args.sync !== null) {
   var results;
   var fd = readStream.fd;
   var par = args.sync;
-  if (par.length===1) {
+  if (par.length === 1) {
     results = fs.readSync(fd, par[0]);
   } else {
     // allowable # of par, 1,2?
     // encoding has to be string like 'utf8' (default)
     // for now slice that off
-    par = [fd].concat(par.slice(0,2));
-    print('par '+par);
+    par = [fd].concat(par.slice(0, 2));
+    print('par ' + par);
     results = fs.readSync.apply(null, par);
-  };
+  }
   console.log(results[0]);
   fs.closeSync(fd);
-  process.exit()
+  process.exit();
 }
 
 if (readStream) {

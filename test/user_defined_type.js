@@ -5,7 +5,7 @@
 var assert = require('assert');
 
 var ArgumentParser = require('../lib/argparse').ArgumentParser;
-var ArgumentError = require('../lib/argument/error_types').ArgumentError;
+// var ArgumentError = require('../lib/argument/error_types').ArgumentError;
 var ArgumentTypeError = require('../lib/argument/error_types').ArgumentTypeError;
 
 describe('user defined type', function () {
