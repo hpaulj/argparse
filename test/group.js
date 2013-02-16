@@ -6,7 +6,7 @@
 var assert = require('assert');
 
 var ArgumentParser = require('../lib/argparse').ArgumentParser;
-
+var ArgumentError = require('../lib/argument/error_types').ArgumentError;
 describe('group', function () {
   var parser;
   var args;
@@ -74,8 +74,8 @@ describe('group', function () {
         // right and left actions should be different
         // allow for variations in formatting
         var pat = /(.*): not allowed with argument (.*)/i;
-        if (err instanceof Error) {
-          var m = err.message.match(pat);
+        if (err instanceof ArgumentError) {
+          var m = err.toString().match(pat);
           return m && m[1] !== m[2];
         }
       },
