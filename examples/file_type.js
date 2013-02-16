@@ -51,11 +51,6 @@ var FileType = function (options) {
   // function to handle argument string
   var fn = function (filename) {
     console.log('filetype',filename)
-    // console.log(Error.captureStackTrace(this, this));
-    // this is called on the default string at the start of parseKnownArgs
-    // if default is string, it does '_getValue(action, defaultValue)'
-    // There's a supposed fix in python for this double invocation of the type
-    // we really don't want to open the default if it isn't needed
     var fd, stream;
     if (filename === '-') {
       stream = std;

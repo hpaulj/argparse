@@ -5,6 +5,8 @@
 var assert = require('assert');
 
 var ArgumentParser = require('../lib/argparse').ArgumentParser;
+var ArgumentError = require('../lib/argument/error_types').ArgumentError;
+var ArgumentTypeError = require('../lib/argument/error_types').ArgumentTypeError;
 
 describe('user defined type', function () {
   var parser;
@@ -111,7 +113,26 @@ describe('user defined type', function () {
     assert.deepEqual(args, {d: new Date('1/1/2012')});
     assert.throws(
     function () { parser.parseArgs(['-d', 'abc']); },
-      /Invalid <function> value: abc\nabc is not a valid date/im
+      /Invalid <function> value: abc/im
+    );
+  });
+  it("test ArgumentTypeError", function () {
+    var dateType = function (arg) {
+      var x = new Date(arg);
+      if (x.toString().match('Invalid')) {
+        throw new ArgumentTypeError("" + arg + " is not a valid date.");
+      }
+      return x;
+    };
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['-d'], {type: dateType, defaultValue: '12/31/2012'});
+    args = parser.parseArgs(['-d', '1/1/2012']);
+    assert.deepEqual(args, {d: new Date('1/1/2012')});
+    args = parser.parseArgs([]);
+    assert.deepEqual(args, {d: new Date('12/31/2012')});
+    assert.throws(
+      function () { parser.parseArgs(['-d', 'abc']); },
+      /abc is not a valid date/im
     );
   });
 });
