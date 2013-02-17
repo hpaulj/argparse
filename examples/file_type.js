@@ -98,7 +98,6 @@ var fileType = function (options) {
 // use this file as the default
 // var meStream = fileType({flags: 'r', encoding: 'utf8'})(process.argv[1]);
 var deffile = process.argv[1];
-// ? should the default be an open stream, or a filename (path)
 var helpstr = 'Functionality is roughly that of <cat>';
 
 var parser = new argparse.ArgumentParser({

@@ -135,6 +135,62 @@ describe('user defined type', function () {
       /abc is not a valid date/im
     );
   });
+  it("Check that the type function is called only once", function () {
+    var record = [];
+    var dateType = function (arg) {
+      record.push(arg); // keep record of what arg are sent here
+      var x = new Date(arg);
+      if (x.toString().match('Invalid')) {
+        throw new ArgumentTypeError("" + arg + " is not a valid date.");
+      }
+      return x;
+    };
+    function countCalls(parser, argv) {
+      record = [];
+      args = parser.parseArgs(argv);
+      if (record.length !== 1) {
+        console.log(args);
+        console.log(record);
+      }
+      assert.equal(record.length, 1);
+    }
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['-d'], {type: dateType, defaultValue: '12/31/2012'});
+    countCalls(parser, []);
+    countCalls(parser, ['-d', '1/1/2012']);
+  });
+  it("test for delayed default evaluation(2)", function () {
+    // delayed default evaluation means an error in the default value
+    // is not detected if the default is not used.
+    parser = new ArgumentParser({debug: true});
+    assert.doesNotThrow(function () {
+      parser.addArgument(['-f'], {type: 'float', defaultValue: 'foo'});
+      // args = parser.parseArgs([]); // throws ArgumentError
+      args = parser.parseArgs(['-f', '1.03']);
+    });
+  });
+  it("TestTypeFunctionCallOnlyOnce", function () {
+    function spam(stringToConvert) {
+      assert.equal(stringToConvert, 'spam!');
+      return 'fooConverted';
+    }
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['--foo'], {type: spam, defaultValue: 'bar'});
+    args = parser.parseArgs(['--foo', 'spam!']);
+    assert.deepEqual({foo: 'fooConverted'}, args);
+    // the error with previous code
+    // ArgumentError: argument "--foo": Invalid spam value: bar
+    // http://hg.python.org/cpython/rev/62b5667ef2f4
+  });
+  it("TestTypeFunctionCallWithNonStringDefault", function () {
+    function spam(intToConvert) {
+      assert.equal(intToConvert, 0);
+      return 'fooConverted';
+    }
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['--foo'], {type: spam, defaultValue: 0});
+    args = parser.parseArgs([]);
+    assert.deepEqual({foo: 'fooConverted'}, args);
+    // previous code was fine with this
+  });
 });
-// could test for: Error: "dateType" is not callable
-// by using an unregistered string or other nonfunction
