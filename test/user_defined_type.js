@@ -190,7 +190,38 @@ describe('user defined type', function () {
     parser = new ArgumentParser({debug: true});
     parser.addArgument(['--foo'], {type: spam, defaultValue: 0});
     args = parser.parseArgs([]);
+    // foo shold not be converted because its default is not a string
+    assert.deepEqual({foo: 0}, args);
+  });
+  it("TestTypeFunctionCallWithStringDefault", function () {
+    function spam() {
+      return 'fooConverted';
+    }
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['--foo'], {type: spam, defaultValue: '0'});
+    args = parser.parseArgs([]);
+    // foo shold not be converted because its default is not a string
     assert.deepEqual({foo: 'fooConverted'}, args);
-    // previous code was fine with this
+  });
+  it("test no double type conversion of default", function () {
+    function extend(strToConvert) {
+      return strToConvert + "*";
+    }
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['--foo'], {type: extend, defaultValue: '*'});
+    args = parser.parseArgs([]);
+    // The test argument will be two stars, one coming from the default
+    // value and one coming from the type conversion being called exactly
+    // once.
+    assert.deepEqual({foo: '**'}, args);
+  });
+  it("test issue 15906", function () {
+    // Issue #15906: When action='append', type=str, default=[] are
+    // provided, the dest value was the string representation "[]" when it
+    // should have been an empty list.
+    parser = new ArgumentParser({debug: true});
+    parser.addArgument(['--foo'], {dest: 'foo', type: 'string', defaultValue: [], action: 'append'});
+    args = parser.parseArgs([]);
+    assert.deepEqual(args.foo, []);
   });
 });
