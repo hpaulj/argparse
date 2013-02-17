@@ -13,16 +13,8 @@ var argparse = require('argparse');
 var _ = require('underscore');
 
 var ArgumentTypeError;
-/*
-function ArgumentTypeError(msg) {
-  Error.captureStackTrace(this, this);
-  this.message = msg || 'Argument Error';
-  this.name = 'ArgumentTypeError';
-}
-util.inherits(ArgumentTypeError, Error);
-*/
-
-ArgumentTypeError = require('../lib/argument/error_types').ArgumentTypeError;
+ArgumentTypeError = require('argparse').ErrorTypes.ArgumentTypeError;
+if (!_.isFunction(ArgumentTypeError)) {ArgumentTypeError = TypeError; }
 
 /**
 * Equivalent to the argparse.py FileType class

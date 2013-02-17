@@ -724,21 +724,6 @@ describe('nargs', function () {
     });
   });
 
-  // Added after bug in ndoc
-  it.skip('test a Positional that specifies unlimited nargs, alternate definition', function () {
-    parser = new ArgumentParser({debug: true});
-    parser.addArgument([ 'paths' ], {
-      help:     'Source files location',
-      metavar:  'PATH',
-      action:   'append',
-      nargs:    '+'
-    });
-
-    args = parser.parseArgs([ 'lib/', 'examples/' ]);
-    assert.deepEqual(args, { paths: [ 'lib/', 'examples/' ] });
-  });
-
-
   it('test a Positional with unlimited nargs followed by one with 1', function () {
     parser = new ArgumentParser({debug: true});
     parser.addArgument([ 'foo' ], { nargs: '*' });
@@ -844,7 +829,7 @@ describe('nargs', function () {
 
   });
 
-  
+
   it("should accept defaultValue for nargs:'*'", function () {
     parser = new ArgumentParser({debug: true});
     parser.addArgument(['-f', '--foo']);
