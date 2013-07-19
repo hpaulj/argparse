@@ -178,6 +178,6 @@ describe('group', function () {
     group2.addArgument(['--xxx'], {});
     // single entry in a required group, remove group ()
     usage = parser.formatUsage();
-    assert.equal(usage, 'usage: PROG [-h]  --xxx XXX\n');
+    assert.equal(usage, 'usage: PROG [-h] --xxx XXX\n');
   });
 });
