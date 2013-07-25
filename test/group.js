@@ -169,7 +169,7 @@ describe('group', function () {
 
   it('suppressed and single action groups', function () {
     // adapted from test_argparse.py
-    var usage, group1, group2;
+    var usage, group1, group2, group3;
     parser = new ArgumentParser({prog: 'PROG', debug: true});
     group1 = parser.addMutuallyExclusiveGroup();
     group1.addArgument(['--sup'], {help: '==SUPPRESS=='});
@@ -177,6 +177,8 @@ describe('group', function () {
     group2 = parser.addMutuallyExclusiveGroup({required: true});
     group2.addArgument(['--xxx'], {});
     // single entry in a required group, remove group ()
+    // empty group
+    group3 = parser.addMutuallyExclusiveGroup({required: true});
     usage = parser.formatUsage();
     assert.equal(usage, 'usage: PROG [-h] --xxx XXX\n');
   });
@@ -197,7 +199,7 @@ describe('group', function () {
     usage = parser.formatUsage();
     console.log('\n'+usage);
     assert.equal(usage.split('\n').length,5,'wrong number of lines');
-    assert.ok(usage.match(/\[--b \[innerpart\]outerpart\] \[--c C\]/gm),'splitting on []')
-    assert.ok(usage.match(/range\(0, 20\)/gm),'removing ()')
+    assert.ok(usage.match(/\[--b \[innerpart\]outerpart\] \[--c C\]/gm),'splitting on []');
+    assert.ok(usage.match(/range\(0, 20\)/gm),'removing ()');
   });
 });
